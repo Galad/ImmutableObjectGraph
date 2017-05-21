@@ -13,18 +13,14 @@
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.Diagnostics;
-    using Microsoft.CodeAnalysis.MSBuild;
     using Microsoft.CodeAnalysis.Text;
     using Validation;
     using Xunit;
     using Xunit.Abstractions;
+    using System.Runtime;
 
     public class CodeGenTests
     {
-        protected Solution solution;
-        protected ProjectId projectId;
-        protected DocumentId inputDocumentId;
-
         private readonly ITestOutputHelper logger;
 
         public CodeGenTests(ITestOutputHelper logger)
@@ -32,19 +28,20 @@
             Requires.NotNull(logger, nameof(logger));
 
             this.logger = logger;
-            var workspace = new AdhocWorkspace();
-            var project = workspace.CurrentSolution.AddProject("test", "test", "C#")
-                .WithCompilationOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
-                .AddMetadataReferences(GetReferences("Profile78"))
-                .AddMetadataReference(MetadataReference.CreateFromFile(typeof(GenerateImmutableAttribute).Assembly.Location))
-                .AddMetadataReference(MetadataReference.CreateFromFile(typeof(CodeGenerationAttributeAttribute).Assembly.Location))
-                .AddMetadataReference(MetadataReference.CreateFromFile(typeof(Optional).Assembly.Location))
-                .AddMetadataReference(MetadataReference.CreateFromFile(typeof(ImmutableArray).Assembly.Location));
-            var inputDocument = project.AddDocument("input.cs", string.Empty);
-            this.inputDocumentId = inputDocument.Id;
-            project = inputDocument.Project;
-            this.projectId = inputDocument.Project.Id;
-            this.solution = project.Solution;
+        }
+
+        private static CSharpCompilation CreateCompilation(IEnumerable<SyntaxTree> syntaxTrees)
+        {
+            var compilation = CSharpCompilation.Create("codegen", syntaxTrees)
+                                               .WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+                                               //.AddReferences(GetReferences("Profile84"))
+                                               .AddReferences(MetadataReference.CreateFromFile(typeof(Attribute).Assembly.Location))
+                                               .AddReferences(MetadataReference.CreateFromFile(typeof(GCSettings).Assembly.Location))
+                                               .AddReferences(MetadataReference.CreateFromFile(typeof(GenerateImmutableAttribute).Assembly.Location))
+                                               .AddReferences(MetadataReference.CreateFromFile(typeof(CodeGenerationAttributeAttribute).Assembly.Location))
+                                               .AddReferences(MetadataReference.CreateFromFile(typeof(Optional).Assembly.Location))
+                                               .AddReferences(MetadataReference.CreateFromFile(typeof(ImmutableArray).Assembly.Location));
+            return compilation;
         }
 
         [Fact]
@@ -262,19 +259,17 @@
 
         protected async Task<GenerationResult> GenerateAsync(SourceText inputSource)
         {
-            var solution = this.solution.WithDocumentText(this.inputDocumentId, inputSource);
-            var inputDocument = solution.GetDocument(this.inputDocumentId);
+            var compilation = CreateCompilation(new[] { CSharpSyntaxTree.ParseText(inputSource) });            
             var generatorDiagnostics = new List<Diagnostic>();
             var progress = new SynchronousProgress<Diagnostic>(generatorDiagnostics.Add);
-            var outputDocument = await DocumentTransform.TransformAsync(inputDocument, progress);
-
+            var s = compilation.SyntaxTrees.Single();
+            var syntaxTree = await DocumentTransform.TransformAsync(compilation, s, progress);           
             // Make sure the result compiles without errors or warnings.
-            var compilation = await outputDocument.Project.GetCompilationAsync();
+            var checkCompilation = CSharpCompilation.Create("codegencheck", new[] { syntaxTree });
             var compilationDiagnostics = compilation.GetDiagnostics();
 
-            SourceText outputDocumentText = await outputDocument.GetTextAsync();
+            var outputDocumentText = syntaxTree.GetText();
             this.logger.WriteLine("{0}", outputDocumentText);
-
             // Verify all line endings are consistent (otherwise VS can bug the heck out of the user if they have the generated file open).
             string firstLineEnding = null;
             foreach (var line in outputDocumentText.Lines)
@@ -292,8 +287,8 @@
                 }
             }
 
-            var semanticModel = await outputDocument.GetSemanticModelAsync();
-            var result = new GenerationResult(outputDocument, semanticModel, generatorDiagnostics, compilationDiagnostics);
+            var semanticModel = checkCompilation.GetSemanticModel(syntaxTree);
+            var result = new GenerationResult(semanticModel, generatorDiagnostics, compilationDiagnostics);
 
             foreach (var diagnostic in generatorDiagnostics)
             {
@@ -333,7 +328,7 @@
 
         private static IEnumerable<MetadataReference> GetReferences(string profile)
         {
-            string profileDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), @"Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\Profile", profile);
+            string profileDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), @"Reference Assemblies\Microsoft\Framework\.NETPortable\v4.6\");
             foreach (string assembly in Directory.GetFiles(profileDirectory, "*.dll"))
             {
                 yield return MetadataReference.CreateFromFile(assembly);
@@ -343,19 +338,15 @@
         protected class GenerationResult
         {
             public GenerationResult(
-                Document document,
                 SemanticModel semanticModel,
                 IReadOnlyList<Diagnostic> generatorDiagnostics,
                 IReadOnlyList<Diagnostic> compilationDiagnostics)
             {
-                this.Document = document;
                 this.SemanticModel = semanticModel;
                 this.Declarations = CSharpDeclarationComputer.GetDeclarationsInSpan(semanticModel, TextSpan.FromBounds(0, semanticModel.SyntaxTree.Length), true, CancellationToken.None);
                 this.GeneratorDiagnostics = generatorDiagnostics;
                 this.CompilationDiagnostics = compilationDiagnostics;
             }
-
-            public Document Document { get; private set; }
 
             public SemanticModel SemanticModel { get; private set; }
 

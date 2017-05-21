@@ -11,6 +11,8 @@
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Validation;
+    using System.Reflection.Metadata;
+    using Microsoft.CodeAnalysis.CSharp;
 
     public class CodeGenerator : ICodeGenerator
     {
@@ -25,7 +27,7 @@
             this.data = this.attributeData.NamedArguments.ToImmutableDictionary(kv => kv.Key, kv => kv.Value);
         }
 
-        public Task<SyntaxList<MemberDeclarationSyntax>> GenerateAsync(MemberDeclarationSyntax applyTo, Document document, IProgress<Diagnostic> progress, CancellationToken cancellationToken)
+        public Task<SyntaxList<MemberDeclarationSyntax>> GenerateAsync(MemberDeclarationSyntax applyTo, CSharpCompilation compilation, IProgress<Diagnostic> progress, CancellationToken cancellationToken)
         {
             Requires.NotNull(applyTo, nameof(applyTo));
 
@@ -38,7 +40,7 @@
                 DefineWithMethodsPerProperty = this.GetBoolData(nameof(GenerateImmutableAttribute.DefineWithMethodsPerProperty)),
             };
 
-            return CodeGen.GenerateAsync((ClassDeclarationSyntax)applyTo, document, progress, options, cancellationToken);
+            return Task.Run(() => CodeGen.Generate((ClassDeclarationSyntax)applyTo, compilation, progress, options, cancellationToken));
         }
 
         private bool GetBoolData(string name)

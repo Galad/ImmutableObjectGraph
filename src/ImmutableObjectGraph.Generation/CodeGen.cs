@@ -18,6 +18,7 @@
     using Microsoft.CodeAnalysis.Text;
     using Validation;
     using LookupTableHelper = RecursiveTypeExtensions.LookupTable<IRecursiveType, IRecursiveParentWithLookupTable<IRecursiveType>>;
+    using System.Reflection.Metadata;
 
     public partial class CodeGen
     {
@@ -56,7 +57,7 @@
         private static readonly AttributeSyntax ObsoletePublicCtor = SyntaxFactory.Attribute(Syntax.GetTypeSyntax(typeof(ObsoleteAttribute))).AddArgumentListArguments(SyntaxFactory.AttributeArgument(SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal("This constructor for use with deserializers only. Use the static Create factory method instead."))));
 
         private readonly ClassDeclarationSyntax applyTo;
-        private readonly Document document;
+        private readonly CSharpCompilation compilation;
         private readonly IProgress<Diagnostic> progress;
         private readonly Options options;
         private readonly CancellationToken cancellationToken;
@@ -70,14 +71,13 @@
         private TypeSyntax applyToTypeName;
         private List<FeatureGenerator> mergedFeatures = new List<FeatureGenerator>();
 
-        private CodeGen(ClassDeclarationSyntax applyTo, Document document, IProgress<Diagnostic> progress, Options options, CancellationToken cancellationToken)
+        private CodeGen(ClassDeclarationSyntax applyTo, CSharpCompilation compilation, IProgress<Diagnostic> progress, Options options, CancellationToken cancellationToken)
         {
             Requires.NotNull(applyTo, nameof(applyTo));
-            Requires.NotNull(document, nameof(document));
             Requires.NotNull(progress, nameof(progress));
 
             this.applyTo = applyTo;
-            this.document = document;
+            this.compilation = compilation;
             this.progress = progress;
             this.options = options ?? new Options();
             this.cancellationToken = cancellationToken;
@@ -87,14 +87,14 @@
 
         public PluralizationService PluralService { get; set; }
 
-        public static async Task<SyntaxList<MemberDeclarationSyntax>> GenerateAsync(ClassDeclarationSyntax applyTo, Document document, IProgress<Diagnostic> progress, Options options, CancellationToken cancellationToken)
+        public static async Task<SyntaxList<MemberDeclarationSyntax>> Generate(ClassDeclarationSyntax applyTo, CSharpCompilation compilation, IProgress<Diagnostic> progress, Options options, CancellationToken cancellationToken)
         {
             Requires.NotNull(applyTo, "applyTo");
-            Requires.NotNull(document, "document");
             Requires.NotNull(progress, "progress");
+            Requires.NotNull(compilation, "compilation");
 
-            var instance = new CodeGen(applyTo, document, progress, options, cancellationToken);
-            return await instance.GenerateAsync();
+            var instance = new CodeGen(applyTo, compilation, progress, options, cancellationToken);
+            return await instance.Generate();
         }
 
         private void MergeFeature(FeatureGenerator featureGenerator)
@@ -106,9 +106,30 @@
             }
         }
 
-        private async Task<SyntaxList<MemberDeclarationSyntax>> GenerateAsync()
+        private Task<SyntaxList<MemberDeclarationSyntax>> Generate()
         {
-            this.semanticModel = await document.GetSemanticModelAsync(cancellationToken);
+            this.semanticModel = compilation.GetSemanticModel(applyTo.SyntaxTree, true);
+            //this.semanticModel = compilation.SyntaxTrees.Select(s =>
+            //{
+            //    var semanticModel = compilation.GetSemanticModel(s, true);
+            //    var symbol = default(INamedTypeSymbol);
+            //    try
+            //    {
+            //        symbol = semanticModel.GetDeclaredSymbol(this.applyTo, this.cancellationToken);
+
+            //    }
+            //    catch (Exception)
+            //    {                    
+            //    }
+            //    return new { semanticModel, symbol };
+            //})
+            //                       .First(s => s.symbol != null)
+            //                       .semanticModel;
+
+            var gia = compilation.GetTypeByMetadataName(typeof(ImmutableObjectGraph.Generation.GenerateImmutableAttribute).FullName);
+            if (!((ClassDeclarationSyntax)applyTo).AttributeLists.Any(al => al.Attributes.Any(a => semanticModel.GetSymbolInfo(a).Symbol.ContainingType == gia)))
+                return Task.FromResult(SyntaxFactory.List<MemberDeclarationSyntax>());
+
             this.isAbstract = applyTo.Modifiers.Any(m => m.IsKind(SyntaxKind.AbstractKeyword));
             this.isSealed = applyTo.Modifiers.Any(m => m.IsKind(SyntaxKind.SealedKeyword));
             this.applyToTypeName = SyntaxFactory.IdentifierName(this.applyTo.Identifier);
@@ -145,6 +166,11 @@
                 innerMembers.Add(CreateGetDefaultTemplateMethod());
                 innerMembers.Add(CreateCreateDefaultTemplatePartialMethod());
                 innerMembers.Add(CreateTemplateStruct());
+                //innerMembers.Add(CreateValidateMethod());
+            }
+            
+            if (!isAbstract)
+            {
                 innerMembers.Add(CreateValidateMethod());
             }
 
@@ -180,7 +206,7 @@
             outerMembers = outerMembers.Add(partialClass);
             outerMembers = this.mergedFeatures.Aggregate(outerMembers, (acc, feature) => feature.ProcessFinalGeneratedResult(acc));
 
-            return outerMembers;
+            return Task.FromResult(outerMembers); ;
         }
 
         private static PropertyDeclarationSyntax CreatePropertyForField(FieldDeclarationSyntax field, VariableDeclaratorSyntax variable)

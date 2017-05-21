@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ImmutableObjectGraph.Generation.Tests</RootNamespace>
     <AssemblyName>ImmutableObjectGraph.Generation.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)\..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
@@ -48,99 +48,90 @@
   <ItemGroup>
     <Compile Include="CodeGenTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="TestSources\AlmostRecursive.cs" />
-    <EmbeddedResource Include="TestSources\HierarchyLevels.cs" />
-    <EmbeddedResource Include="TestSources\IgnoreField.cs" />
-    <EmbeddedResource Include="TestSources\RootedStruct_Without_WithMethodsPerProperty.cs" />
-    <Compile Include="TestSources\AbstractClassMidTypeHierarchyWithRequiredField.cs">
+    <Compile Include="TestSources\CompileTime\AbstractClassFamilies.cs">
       <Generator>MSBuild:GenerateCodeFromAttributes</Generator>
     </Compile>
-    <EmbeddedResource Include="TestSources\ByteArray.cs" />
-    <EmbeddedResource Include="TestSources\ImmutableArray.cs" />
-    <Compile Include="TestSources\Generations.cs">
+    <Compile Include="TestSources\CompileTime\AbstractClassFamilies.Tests.cs" />
+    <Compile Include="TestSources\CompileTime\AbstractClassMidTypeHierarchyWithRequiredField.cs">
       <Generator>MSBuild:GenerateCodeFromAttributes</Generator>
     </Compile>
-    <Compile Include="TestSources\Generations.Tests.cs" />
-    <EmbeddedResource Include="TestSources\DefineRootedStruct_NotApplicable.cs" />
-    <Compile Include="TestSources\ImmutableDictionaryHelpers.cs">
+    <Compile Include="TestSources\CompileTime\DeepHierarchy.cs">
       <Generator>MSBuild:GenerateCodeFromAttributes</Generator>
     </Compile>
-    <Compile Include="TestSources\ImmutableDictionaryHelpers.Tests.cs" />
-    <Compile Include="TestSources\ImmutableWithComplexStructField.cs">
+    <Compile Include="TestSources\CompileTime\DeepHierarchy.Tests.cs" />
+    <Compile Include="TestSources\CompileTime\Empty.cs">
       <Generator>MSBuild:GenerateCodeFromAttributes</Generator>
     </Compile>
-    <Compile Include="TestSources\ImmutableWithComplexStructField.Tests.cs" />
-    <Compile Include="TestSources\MSBuild.cs">
+    <Compile Include="TestSources\CompileTime\Empty.Tests.cs" />
+    <Compile Include="TestSources\CompileTime\FileSystem.cs">
       <Generator>MSBuild:GenerateCodeFromAttributes</Generator>
     </Compile>
-    <Compile Include="TestSources\MSBuild.Tests.cs" />
-    <Compile Include="TestSources\Nested.cs">
+    <Compile Include="TestSources\CompileTime\FileSystem.Tests.cs" />
+    <Compile Include="TestSources\CompileTime\Generations.cs">
       <Generator>MSBuild:GenerateCodeFromAttributes</Generator>
     </Compile>
-    <Compile Include="TestSources\Nested.Tests.cs" />
-    <Compile Include="TestSources\NonRecursive.cs">
+    <Compile Include="TestSources\CompileTime\Generations.Tests.cs" />
+    <Compile Include="TestSources\CompileTime\ImmutableDictionaryHelpers.cs">
       <Generator>MSBuild:GenerateCodeFromAttributes</Generator>
     </Compile>
-    <Compile Include="TestSources\ProjectTree.cs">
+    <Compile Include="TestSources\CompileTime\ImmutableDictionaryHelpers.Tests.cs" />
+    <Compile Include="TestSources\CompileTime\ImmutableWithComplexStructField.cs">
       <Generator>MSBuild:GenerateCodeFromAttributes</Generator>
     </Compile>
-    <Compile Include="TestSources\ProjectTreeCapabilities.cs" />
-    <Compile Include="TestSources\ProjectTreeNodeTest.cs" />
-    <Compile Include="TestSources\ProjectTreeNodeTest2.cs" />
-    <Compile Include="TestSources\ProjectTreeNodeTestBase.cs" />
-    <Compile Include="TestSources\ProjectTreePartial.cs" />
-    <Compile Include="TestSources\ProjectTreeSort.cs" />
-    <Compile Include="TestSources\ProjectTreeTests.cs" />
-    <Compile Include="TestSources\RequiresAndHierarchy.cs">
+    <Compile Include="TestSources\CompileTime\ImmutableWithComplexStructField.Tests.cs" />
+    <Compile Include="TestSources\CompileTime\MSBuild.cs">
       <Generator>MSBuild:GenerateCodeFromAttributes</Generator>
     </Compile>
-    <Compile Include="TestSources\RequiresAndHierarchy.Tests.cs" />
-    <Compile Include="TestSources\Sealed.cs">
+    <Compile Include="TestSources\CompileTime\MSBuild.Tests.cs" />
+    <Compile Include="TestSources\CompileTime\Nested.cs">
       <Generator>MSBuild:GenerateCodeFromAttributes</Generator>
     </Compile>
-    <Compile Include="TestSources\Sealed.Tests.cs" />
-    <Compile Include="TestSources\TreeNode.cs">
+    <Compile Include="TestSources\CompileTime\Nested.Tests.cs" />
+    <Compile Include="TestSources\CompileTime\NonRecursive.cs">
       <Generator>MSBuild:GenerateCodeFromAttributes</Generator>
     </Compile>
-    <Compile Include="TestSources\TreeNode.Tests.cs" />
-    <EmbeddedResource Include="TestSources\UsingImmutableObjectGraph.cs" />
-    <Compile Include="TestSources\XmlNode.cs">
+    <Compile Include="TestSources\CompileTime\Person.BuilderTests.cs" />
+    <Compile Include="TestSources\CompileTime\Person.cs">
       <Generator>MSBuild:GenerateCodeFromAttributes</Generator>
     </Compile>
-    <Compile Include="TestSources\XmlNode.Tests.cs" />
-    <Compile Include="TestSources\Person.BuilderTests.cs" />
-    <Compile Include="TestSources\Person.Tests.cs" />
-    <EmbeddedResource Include="TestSources\OneImmutableFieldToAnotherWithOneScalarField.cs" />
-    <Compile Include="TestSources\AbstractClassFamilies.Tests.cs" />
-    <Compile Include="TestSources\DeepHierarchy.Tests.cs" />
-    <Compile Include="TestSources\Empty.Tests.cs" />
-    <Compile Include="TestSources\FileSystem.cs">
+    <Compile Include="TestSources\CompileTime\Person.Tests.cs" />
+    <Compile Include="TestSources\CompileTime\ProjectTree.cs">
       <Generator>MSBuild:GenerateCodeFromAttributes</Generator>
     </Compile>
-    <Compile Include="TestSources\AbstractClassFamilies.cs">
+    <Compile Include="TestSources\CompileTime\ProjectTreeCapabilities.cs">
       <Generator>MSBuild:GenerateCodeFromAttributes</Generator>
     </Compile>
-    <Compile Include="TestSources\DeepHierarchy.cs">
+    <Compile Include="TestSources\CompileTime\ProjectTreeNodeTest.cs" />
+    <Compile Include="TestSources\CompileTime\ProjectTreeNodeTest2.cs" />
+    <Compile Include="TestSources\CompileTime\ProjectTreeNodeTestBase.cs" />
+    <Compile Include="TestSources\CompileTime\ProjectTreePartial.cs">
       <Generator>MSBuild:GenerateCodeFromAttributes</Generator>
     </Compile>
-    <EmbeddedResource Include="TestSources\OneScalarFieldAndEmptyDerived.cs" />
-    <EmbeddedResource Include="TestSources\NoFieldsAndNoFieldsDerived.cs" />
-    <EmbeddedResource Include="TestSources\NoFieldsAndOneScalarFieldDerived.cs" />
-    <EmbeddedResource Include="TestSources\AbstractNonEmptyWithDerivedEmpty.cs" />
-    <EmbeddedResource Include="TestSources\ClassDerivesFromAnotherWithFieldsAndBuilder.cs" />
-    <EmbeddedResource Include="TestSources\ClassDerivesFromAnotherWithFields.cs" />
-    <EmbeddedResource Include="TestSources\OneScalarFieldWithBuilder.cs" />
-    <EmbeddedResource Include="TestSources\OneScalarField.cs" />
-    <Compile Include="TestSources\Person.cs">
+    <Compile Include="TestSources\CompileTime\ProjectTreeSort.cs">
       <Generator>MSBuild:GenerateCodeFromAttributes</Generator>
     </Compile>
-    <Compile Include="TestSources\Empty.cs">
+    <Compile Include="TestSources\CompileTime\ProjectTreeTests.cs" />
+    <Compile Include="TestSources\CompileTime\RequiresAndHierarchy.cs">
       <Generator>MSBuild:GenerateCodeFromAttributes</Generator>
     </Compile>
+    <Compile Include="TestSources\CompileTime\RequiresAndHierarchy.Tests.cs" />
+    <Compile Include="TestSources\CompileTime\Sealed.cs">
+      <Generator>MSBuild:GenerateCodeFromAttributes</Generator>
+    </Compile>
+    <Compile Include="TestSources\CompileTime\Sealed.Tests.cs" />
+    <Compile Include="TestSources\CompileTime\TreeNode.cs">
+      <Generator>MSBuild:GenerateCodeFromAttributes</Generator>
+    </Compile>
+    <Compile Include="TestSources\CompileTime\TreeNode.Tests.cs" />
+    <Compile Include="TestSources\CompileTime\XmlNode.cs">
+      <Generator>MSBuild:GenerateCodeFromAttributes</Generator>
+    </Compile>
+    <Compile Include="TestSources\CompileTime\XmlNode.Tests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-    <Compile Include="TestSources\FileSystem.Tests.cs" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
@@ -160,5 +151,29 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="TestSources\AbstractNonEmptyWithDerivedEmpty.cs" />
+    <EmbeddedResource Include="TestSources\AlmostRecursive.cs" />
+    <EmbeddedResource Include="TestSources\ByteArray.cs" />
+    <EmbeddedResource Include="TestSources\ClassDerivesFromAnotherWithFields.cs" />
+    <EmbeddedResource Include="TestSources\ClassDerivesFromAnotherWithFieldsAndBuilder.cs" />
+    <EmbeddedResource Include="TestSources\DefineRootedStruct_NotApplicable.cs" />
+    <EmbeddedResource Include="TestSources\HierarchyLevels.cs" />
+    <EmbeddedResource Include="TestSources\IgnoreField.cs" />
+    <EmbeddedResource Include="TestSources\ImmutableArray.cs" />
+    <EmbeddedResource Include="TestSources\NoFieldsAndNoFieldsDerived.cs" />
+    <EmbeddedResource Include="TestSources\NoFieldsAndOneScalarFieldDerived.cs" />
+    <EmbeddedResource Include="TestSources\OneImmutableFieldToAnotherWithOneScalarField.cs" />
+    <EmbeddedResource Include="TestSources\OneScalarField.cs" />
+    <EmbeddedResource Include="TestSources\OneScalarFieldAndEmptyDerived.cs" />
+    <EmbeddedResource Include="TestSources\OneScalarFieldWithBuilder.cs" />
+    <EmbeddedResource Include="TestSources\RootedStruct_Without_WithMethodsPerProperty.cs" />
+    <EmbeddedResource Include="TestSources\UsingImmutableObjectGraph.cs" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
 </Project>

@@ -1,10 +1,11 @@
 ﻿{
   "dependencies": {
+    "CodeGeneration.Roslyn.BuildTime": "0.3.10"
   },
   "frameworks": {
-    ".NETFramework,Version=v4.6": { }
+    ".NETFramework,Version=v4.6": {}
   },
   "runtimes": {
-    "win": { }
+    "win": {}
   }
 }
