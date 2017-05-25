@@ -1,19 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2013/01/nuspec.xsd">
   <metadata>
-    <id>placeholder</id>
-    <version>$version$</version>
-    <authors>aarnott</authors>
-    <owners></owners>
+    <id>ImmutableObjectGraph.Generation</id>
+    <version>1.1.99-enablon</version>
+    <authors>Andrew Arnott</authors>
+    <owners>Andrew Arnott</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>to be overwritten by project file</description>
+    <description>MSBuild-based code generator to transform simple mutable type definitions into fully functional immutable types with persistent characteristics.</description>
+	<licenseUrl>https://raw.githubusercontent.com/AArnott/ImmutableObjectGraph/$GitCommitIdShort$/LICENSE.txt</licenseUrl>
+	<projectUrl>https://github.com/aarnott/immutableobjectgraph</projectUrl>
+	<copyright>Copyright © Andrew Arnott</copyright>
     <releaseNotes></releaseNotes>
-    <copyright></copyright>
-    <tags></tags>
+    <tags>immutable</tags>   
+    
     <dependencies>
-      <group targetFramework="portable-net45+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10">
-        <dependency id="CodeGeneration.Roslyn.BuildTime" version="0.1.57" />
+      <group targetFramework=".NETFramework4.6">
+        <dependency id="CodeGeneration.Roslyn.BuildTime" version="0.3.11-enablon" />
+		<dependency id="ImmutableObjectGraph" version="1.1.99-enablon" />
       </group>
     </dependencies>
   </metadata>
+  <files>
+  	<file src="..\ImmutableObjectGraph.Generation\bin\Release\ImmutableObjectGraph.dll" target="tools" />		
+  	<file src="..\ImmutableObjectGraph.Generation\bin\Release\ImmutableObjectGraph.Generation.dll" target="tools" />		
+  	<file src="..\ImmutableObjectGraph.Generation\bin\Release\ImmutableObjectGraph.Generation.Attributes.dll" target="tools" />				
+  	<file src="..\ImmutableObjectGraph.Generation\bin\Release\ImmutableObjectGraph.pdb" target="tools" />		
+  	<file src="..\ImmutableObjectGraph.Generation\bin\Release\ImmutableObjectGraph.Generation.pdb" target="tools" />		
+  	<file src="..\ImmutableObjectGraph.Generation\bin\Release\ImmutableObjectGraph.Generation.Attributes.pdb" target="tools" />		
+  	<file src="..\ImmutableObjectGraph.Generation\bin\Release\ImmutableObjectGraph.Generation.Attributes.dll" target="lib\net460" />				
+  	<file src="build\*.*" target="build" />		
+  	<file src="Readme.txt" target="" />		
+  </files>
+ 
 </package>
