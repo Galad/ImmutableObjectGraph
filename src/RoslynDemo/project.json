@@ -1,6 +1,6 @@
 ﻿{
   "dependencies": {
-    "CodeGeneration.Roslyn.BuildTime": "0.3.10"
+    "CodeGeneration.Roslyn.BuildTime": "0.3.11-enablon"
   },
   "frameworks": {
     ".NETFramework,Version=v4.6": {}
