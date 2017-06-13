@@ -2,13 +2,13 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/01/nuspec.xsd">
   <metadata>
     <id>ImmutableObjectGraph</id>
-    <version>1.1.99-enablon</version>
+    <version>1.1.116-enablon</version>
 	<title>ImmutableObjectGraph Core</title>
     <authors>Andrew Arnott</authors>
     <owners>Andrew Arnott</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>The runtime components behind the types generated with the ImmutableObjectGraph.Generation package.</description>
-	<licenseUrl>https://raw.githubusercontent.com/AArnott/ImmutableObjectGraph/$GitCommitIdShort$/LICENSE.txt</licenseUrl>
+	<licenseUrl>https://raw.githubusercontent.com/AArnott/ImmutableObjectGraph/master/LICENSE.txt</licenseUrl>
 	<projectUrl>https://github.com/aarnott/immutableobjectgraph</projectUrl>
 	<copyright>Copyright © Andrew Arnott</copyright>
     <releaseNotes></releaseNotes>
@@ -19,24 +19,14 @@
 		  <dependency id="System.Collections.Immutable" version="1.3.1" />
 		  <dependency id="Validation" version="2.4.15" />
 		</group>
-		<group targetFramework="net460">
-		  <dependency id="System.Collections" version="4.0.0" />
-		  <dependency id="System.Collections.Immutable" version="1.3.1" />
-		  <dependency id="System.Diagnostics.Debug" version="4.0.0" />
-		  <dependency id="System.IO" version="4.0.0" />
-		  <dependency id="System.Linq" version="4.0.0" />
-		  <dependency id="System.Runtime" version="4.0.0" />
-		  <dependency id="System.Runtime.Extensions" version="4.0.0" />
-		  <dependency id="Validation" version="2.4.15" />
-		</group>
     </dependencies>
   	
   </metadata>
   
   
   <files>
-  	<file src="..\ImmutableObjectGraph\bin\Release\ImmutableObjectGraph.dll" target="lib\net460" />				
-  	<file src="..\ImmutableObjectGraph\bin\Release\ImmutableObjectGraph.pdb" target="lib\net460" />				
+  	<file src="..\..\bin\Release\ImmutableObjectGraph\ImmutableObjectGraph.dll" target="lib\portable-net45+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10" />				
+  	<file src="..\..\bin\Release\ImmutableObjectGraph\ImmutableObjectGraph.pdb" target="lib\portable-net45+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10" />		
   </files>
 
 </package>
